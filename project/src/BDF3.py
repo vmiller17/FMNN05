@@ -11,7 +11,7 @@ class BDF_3(Explicit_ODE):
     """
     tol=1.e-8
     maxit=100
-    maxsteps=500
+    maxsteps=5000
     
     def __init__(self, problem):
         Explicit_ODE.__init__(self, problem) #Calls the base class
@@ -38,17 +38,25 @@ class BDF_3(Explicit_ODE):
         #Lists for storing the result
         tres = []
         yres = []
+        ttemp = []
+        ytemp = []
+        
+        for i in range(3):  # initial step
+                t_np1,y_np1 = self.step_EE(t,y,h)
+                ttemp.append(t_np1)
+                ytemp.append(y_np1.copy())
+                tres.append(t_np1)
+                yres.append(y_np1.copy())
+                
+        
+        print len(ttemp)
+        [t,t_nm1,t_nm2] = ttemp
+        [y,y_nm1,y_nm2] = ytemp
         
         for i in range(self.maxsteps):
             if t >= tf:
                 break
-            
-            if i == 0:  # initial step
-                t_np1,y_np1 = self.step_EE(t,y,h)
-                t_nm1,y_nm1 = t_np1,y_np1
-      
-            else:   
-                t_np1, y_np1 = self.step_BDF3([t,t_nm1,t_nm2],[y,y_nm1,y_nm2],h)
+            t_np1, y_np1 = self.step_BDF3([t,t_nm1,t_nm2],[y,y_nm1,y_nm2],h)
             
             t_nm2 = t_nm1
             t_nm1 = t
@@ -104,29 +112,26 @@ class BDF_3(Explicit_ODE):
             
               
             
-#Define the rhs
+#Define the rhs     
 def f(t,y):
-    ydot = -y[0]
-    return N.array([ydot])
-    
-#Define an Assimulo problem
-exp_mod = Explicit_Problem(f, 4)
-exp_mod.problem_name = 'Simple BDF-3 Example'
 
-def pend(t,y):
-    #g=9.81    l=0.7134354980239037
-    gl=13.7503671
-    return N.array([y[1],-gl*N.sin(y[0])])
+    y1 = y[2]
+    y2 = y[3]
+    y3 = -y[0]*30*(N.sqrt(y[0]**2 + y[1]**2)-1)/N.sqrt(y[0]**2 + y[1]**2)
+    y4 = -y[1]*30*(N.sqrt(y[0]**2 + y[1]**2)-1)/N.sqrt(y[0]**2 + y[1]**2)-1
+
+    return N.array([y1,y2,y3,y4])
+     
     
-pend_mod=Explicit_Problem(pend, y0=N.array([2.*N.pi,1.]))
+pend_mod=Explicit_Problem(f, y0=N.array([1, 1, 0, 0]))
 pend_mod.problem_name='Nonlinear Pendulum'
 
 #Define an explicit solver
 exp_sim = BDF_3(pend_mod) #Create a BDF solver
 
+t,y = exp_sim.simulate(30)
 
-t, y = exp_sim.simulate(1)
 
-P.plot(t,y)
+P.plot(y[:,0],y[:,1])
 P.grid()
 P.show()
