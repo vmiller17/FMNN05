@@ -1,4 +1,9 @@
 from scipy import *
+import numpy as np
+import pylab as P
+from assimulo.problem import Implicit_Problem
+from assimulo.solvers import IDA
+
 
 def init_squeezer():
 	y_1 = array([-0.0617138900142764496358948458001,            #  beta
@@ -19,6 +24,8 @@ def init_squeezer():
 			-10666.8329399655854029433719415,       #  Thetadotdot
 			0.,0.,0.,0.,0.]),zeros((6,))))
 	return y,yp
+	
+	
 def squeezer (t, y, yp):
 	"""
 	Residual function of the 7-bar mechanism in
@@ -132,4 +139,14 @@ def squeezer (t, y, yp):
 	return hstack((res_1,res_2,res_3))
 
 
+
+y0, yp0 = init_squeezer()
+t0 = 0.0
+
+
+
+model = Implicit_Problem(squeezer, y0, yp0, t0)
+model.name = 'Squeezer'
+
+solver = IDA(model)
 	
