@@ -140,11 +140,14 @@ def squeezer (t, y, yp):
 
 
 
+
+
+# Initializing 
 y0, yp0 = init_squeezer()
 t0 = 0.0
 
 
-
+# Seting up model and solver
 model = Implicit_Problem(squeezer, y0, yp0, t0)
 model.name = 'Squeezer'
 
