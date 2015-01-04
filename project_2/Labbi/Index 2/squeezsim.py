@@ -22,13 +22,12 @@ tf = .03 # End time for simulation
 
 t, y, yd = sim.simulate(tf)
 
-fig = figure()
 sim.plot(mask=7*[1]+13*[0])
 plt.grid(1)
 plt.axis([0, .03, -1.5, 1.5])
 plt.xlabel('Time, t [s]')
 plt.ylabel('Angle, [rad]')
 plt.show()
-fig.savefig('p2_index3_IDA.eps', format='eps',dpi=1000)
+#plt.savefig('p2_index3_IDA.eps', format='eps',dpi=1000)
 
 

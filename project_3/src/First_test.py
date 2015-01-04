@@ -1,16 +1,15 @@
 import numpy as N
 import pylab as P 
 
-from assimulo.solvers import CVode
+from assimulo.solvers import IDA
 from assimulo.problem import Explicit_Problem
+import sqz_cp
 
 
-#Bouncing ball
-def f(t,y): 
-    yd_1 = y[1]
-    yd_2 = - 9.81
-    return N.array([yd_1,yd_2])
+model = Explicit_Problem(woodpecker)
+
+
     
-    
+
     
     
