@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from scipy import *
 import numpy as np
+from assimulo.solvers import IDA
+from assimulo.problem import Implicit_Problem
 	
 		
 	# -*- coding: utf-8 -*-
@@ -26,12 +28,12 @@ g  = 9.81 #  [m/s^2]
         
 def init_woodpecker():
     
-    y = np.array([0,0,0])
-    ypp = np.array([0,0,0])
+    y = np.array([1,0,0,0,0,0,0,0])
+    yp = np.array([0,0,0,0,0,-g,0,0])
     
     return y,yp
     
-def woodpecker(t, y, yp):
+def woodpecker(t, y, yp, sw):
 	"""
 	Residual function of the 7-bar mechanism in
 	Hairer, Vol. II, p. 533 ff, see also formula (7.11)
@@ -52,8 +54,8 @@ def woodpecker(t, y, yp):
 	if sw[0]:
             res_0 = y[5:7] - yp[0:2] #check index        
             res_1 = -(mS+mB)*yp[5] - mB*lS*yp[6] - mB*lG*yp[7] - (mS+mB)*g
-            res_2 = -(mB*lS)*yp[5] - (JS+mB*lS**2)*yp[6] - (mB*lS*lG)*yp[7] + cp(y[7]-y[6])-mB*lS*g-y[3]
-            res_3 = -mB*lG*yp[5] - (mB*lS*lG)*yp[6] - (JB+mB*lG**2)*yp[7] + cp(y[6]-y[7])-mB*lG*g-y[4]
+            res_2 = -(mB*lS)*yp[5] - (JS+mB*lS**2)*yp[6] - (mB*lS*lG)*yp[7] + cp*(y[7]-y[6])-mB*lS*g-y[3]
+            res_3 = -mB*lG*yp[5] - (mB*lS*lG)*yp[6] - (JB+mB*lG**2)*yp[7] + cp*(y[6]-y[7])-mB*lG*g-y[4]
             res_4 = y[3]
             res_5 = y[4]
 	
@@ -65,8 +67,8 @@ def woodpecker(t, y, yp):
 	if sw[1]:
    	    res_0 = y[5:7] - yp[0:2] #check index        
             res_1 = -(mS+mB)*yp[5] - mB*lS*yp[6] - mB*lG*yp[7] - (mS+mB)*g - y[4]
-            res_2 = -(mB*lS)*yp[5] - (JS+mB*lS**2)*yp[6] - (mB*lS*lG)*yp[7] + cp(y[7]-y[6])-mB*lS*g-hS*y[3]-rS*y[4]
-            res_3 = -mB*lG*yp[5] - (mB*lS*lG)*yp[6] - (JB+mB*lG**2)*yp[7] + cp(y[6]-y[7])-mB*lG*g
+            res_2 = -(mB*lS)*yp[5] - (JS+mB*lS**2)*yp[6] - (mB*lS*lG)*yp[7] + cp*(y[7]-y[6])-mB*lS*g-hS*y[3]-rS*y[4]
+            res_3 = -mB*lG*yp[5] - (mB*lS*lG)*yp[6] - (JB+mB*lG**2)*yp[7] + cp*(y[6]-y[7])-mB*lG*g
             res_4 = (rS-r0) + hS*y[1]
             res_5 = yp[0] + rS*yp[1]
 	
@@ -79,8 +81,8 @@ def woodpecker(t, y, yp):
 	if sw[2]: 
    	    res_0 = y[5:7] - yp[0:2] #check index        
             res_1 = -(mS+mB)*yp[5] - mB*lS*yp[6] - mB*lG*yp[7] - (mS+mB)*g - y[4]
-            res_2 = -(mB*lS)*yp[5] - (JS+mB*lS**2)*yp[6] - (mB*lS*lG)*yp[7] + cp(y[7]-y[6])-mB*lS*g-hS*y[3]-rS*y[4]
-            res_3 = -mB*lG*yp[5] - (mB*lS*lG)*yp[6] - (JB+mB*lG**2)*yp[7] + cp(y[6]-y[7])-mB*lG*g
+            res_2 = -(mB*lS)*yp[5] - (JS+mB*lS**2)*yp[6] - (mB*lS*lG)*yp[7] + cp*(y[7]-y[6])-mB*lS*g-hS*y[3]-rS*y[4]
+            res_3 = -mB*lG*yp[5] - (mB*lS*lG)*yp[6] - (JB+mB*lG**2)*yp[7] + cp*(y[6]-y[7])-mB*lG*g
             res_4 = (rS-r0) - hS*y[1]
             res_5 = yp[0] + rS*yp[1]
             
@@ -107,7 +109,7 @@ def state_events(t,y,yp,sw):
 	
 	return np.array([e1, e2 , e3 , e4])
 	
-def handle_events(solver,event_info):
+def handle_event(solver,event_info):
     
     state_info = event_info[0]
     
@@ -142,6 +144,26 @@ def handle_events(solver,event_info):
         solver.sw[2] = not solver.sw[2]          
         
         
+        
+        
+y0,yp0 = init_woodpecker()
+t0 = 0.0
+sw0 = np.array([1,0,0,0])
+
+model = Implicit_Problem(woodpecker,y0,yp0,t0,sw0)
+
+model.state_events = state_events
+model.handle_event = handle_event
+
+solver = IDA(model)
+solver.simulate(3)
+
+
+
+
+
+        
+
         
 	
 	
