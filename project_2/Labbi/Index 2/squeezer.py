@@ -1,5 +1,7 @@
 from scipy import *
 
+# Index 2
+
 def init_squeezer():
 	y_1 = array([-0.0617138900142764496358948458001,  #  beta
 				0.,                                 #  theta

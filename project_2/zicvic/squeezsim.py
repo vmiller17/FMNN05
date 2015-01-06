@@ -6,24 +6,33 @@ import numpy as np
 
 from assimulo.problem import Implicit_Problem
 from assimulo.solvers import IDA
-import squeezer
+import squeezer_ind2
+import squeezer_ind3
 
-y0,yp0=squeezer.init_squeezer() # Initial values
+y20,yp20=squeezer_ind2.init_squeezer2() # Initial values
+y30,yp30=squeezer_ind3.init_squeezer3() # Initial values
 t0 = 0 # Initial time
 
-squeezemodel = Implicit_Problem(squeezer.squeezer, y0, yp0, t0)
+squeezemodel2 = Implicit_Problem(squeezer_ind2.squeezer2, y20, yp20, t0)
+squeezemodel3 = Implicit_Problem(squeezer_ind3.squeezer3, y30, yp30, t0)
 
 algvar = 7*[1.]+13*[0.]
-sim = IDA(squeezemodel) # Create solver instance
-sim.algvar = algvar
-sim.suppress_alg=True
-sim.atol = 1e-7
+solver2 = IDA(squeezemodel2)    # Create solver instance
+solver3 = IDA(squeezemodel3)    # Create solver instance
+solver2.algvar = algvar
+solver3.algvar = algvar
+
+solver2.suppress_alg=True
+solver3.suppress_alg=True
+solver2.atol = 1e-7
+solver3.atol = 1e-7
 tf = .03 # End time for simulation
 
-t, y, yd = sim.simulate(tf)
+t2, y2, yd2 = solver2.simulate(tf)
+t3, y3, yd3 = solver3.simulate(tf)
 
-sim.plot(mask=7*[1]+13*[0])
-grid(1)
-axis([0, .03, -1.5, 1.5])
-xlabel('Time, t [s]')
-ylabel('Angle, [rad]')
+figure(1)
+plot(t2,y2[:,14:])
+figure(2)
+plot(t3,y3[:,14:])
+show()

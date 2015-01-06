@@ -2,7 +2,7 @@ from scipy import *
 
 # Index 2
 
-def init_squeezer():
+def init_squeezer2():
 	y_1 = array([-0.0617138900142764496358948458001,  #  beta
 				0.,                                 #  theta
 				0.455279819163070380255912382449,   # gamma
@@ -19,7 +19,7 @@ def init_squeezer():
 			-10666.8329399655854029433719415,       #  Thetadotdot
 			0.,0.,0.,0.,0.]),zeros((6,))))
 	return y,yp
-def squeezer (t, y, yp):
+def squeezer2 (t, y, yp):
 	"""
 	Residual function of the 7-bar mechanism in
 	Hairer, Vol. II, p. 533 ff, see also formula (7.11)
