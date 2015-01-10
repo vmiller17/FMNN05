@@ -27,6 +27,8 @@ solver3.suppress_alg=True
 solver2.atol = 1e-7
 solver3.atol = 1e-7
 solver3.maxsteps = 322
+
+print(solver3.maxsteps)
 tf = .03 # End time for simulation
 
 t2, y2, yd2 = solver2.simulate(tf)
@@ -34,6 +36,8 @@ t3, y3, yd3 = solver3.simulate(tf)
 
 figure(1)
 plot(t2,y2[:,14:16])
+title('Index 2')
 figure(2)
 plot(t3,y3[:,14:16])
+title('Index 3')
 show()

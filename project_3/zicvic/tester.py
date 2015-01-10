@@ -19,7 +19,6 @@ def pendulum(t,y,sw):
     return N.array([yd_0, yd_1])
     
     
-    
 def state_events(t,y,sw):
     """
     This is the function that keeps track of  events. When the sign
@@ -76,6 +75,8 @@ ncp = 200     #Number of communication points
 tfinal = 10.0 #Final time
 
 t, y = sim.simulate(tfinal, ncp) #Simulate
+
+
 
 
 

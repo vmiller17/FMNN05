@@ -5,12 +5,12 @@ from assimulo.solvers import IDA
 from assimulo.problem import Implicit_Problem
 	
 		
-	# -*- coding: utf-8 -*-
-        # Mechanical and geometric constants of the woodpecker model
-        # according to 
-        # Ch. Glocker: Dynamik von StarrkÃ¶rpersystemen mit Reibung und StÃ¶ssen
-        # PhD thesis TU MÃ¼nchen, July 1995, pp. 162ff
-        #
+# -*- coding: utf-8 -*-
+# Mechanical and geometric constants of the woodpecker model
+# according to 
+# Ch. Glocker: Dynamik von StarrkÃ¶rpersystemen mit Reibung und StÃ¶ssen
+# PhD thesis TU MÃ¼nchen, July 1995, pp. 162ff
+#
 mS = 3.0e-4 # Mass of sleeve [kg]
 JS = 5.0e-9 # Moment of inertia of the sleeve [kgm]
 mB = 4.5e-3 # Mass of bird [kg]
@@ -100,14 +100,20 @@ def woodpecker(t, y, yp, sw):
 def state_events(t,y,yp,sw):
     
 	e1 = -hS*y[1] - (rS-r0)
-	
 	e2 = -hS*y[1] + (rS-r0)
-	
 	e3 = y[3]
-	
 	e4 = -hB*y[2] +lS+lG-lB-r0
 	
 	return np.array([e1, e2 , e3 , e4])
+	
+def state_events(t,y,yp,sw):
+    
+    e1 = -hS*y[1] - (rS-r0)
+    e2 = -hS*y[1] + (rS-r0)
+    e3 = y[3]
+    e4 = -hB*y[2] +lS+lG-lB-r0
+	
+    return np.array([e1, e2 , e3 , e4])
 	
 def handle_event(solver,event_info):
     
